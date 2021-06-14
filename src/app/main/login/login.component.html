@@ -1,0 +1,18 @@
+<div class="form-floating mb-3">
+  <h2>LogIn</h2>
+  <div>
+    <form [formGroup] = 'form' (ngSubmit) = 'login()'>
+        <label>Username</label>
+        <input type = 'text' formControlName = 'username' />
+        <label>Password</label>
+        <input type = 'password' formControlName = 'password' />
+        <div>
+            <button type ='submit' [disabled] = '!this.form.valid' class="btn btn-primary">
+                Login
+            </button>
+            <a [routerLink]="['/register']" class="btn btn-link">Register</a>
+        </div>
+    </form>
+  </div>
+</div>
+
