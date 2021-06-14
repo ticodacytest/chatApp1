@@ -103,7 +103,7 @@ async def register(user: UserIn_Pydantic):
         username=user.username,
         password=bcrypt.hash(user.password),
     )
-    print(user.username)
+    # print(user.username)
     await user_obj.save()
     return await User_Pydantic.from_tortoise_orm(user_obj)
     # access_token = Authorize.create_access_token(subject=user.username)
@@ -113,7 +113,7 @@ async def register(user: UserIn_Pydantic):
 @app.post("/login")
 async def login(user: UserIn_Pydantic0, Authorize: AuthJWT = Depends()):
     user = await authenticate_user(user.username, user.password)
-    print(user.password)
+    # print(user.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
