@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { ChatComponent } from './main/chat/chat.component';
 import { DashboardComponent } from './main/dashboard/dashboard.component';
 import { LoginComponent } from './main/login/login.component';
 import { ProfileComponent } from './main/profile/profile.component';
 import { RegisterComponent } from './main/register/register.component';
 import { AuthGuardService } from './services/auth-guard.service';
-
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
@@ -19,6 +19,11 @@ const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
+    canActivate:[AuthGuardService]
+  },
+  {
+    path: 'chat',
+    component: ChatComponent,
     canActivate:[AuthGuardService]
   },
   {
