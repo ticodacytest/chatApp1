@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   login(){
     const HTTP_OPTIONS = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": 'application/x-www-form-urlencoded',
       })
     };
 
