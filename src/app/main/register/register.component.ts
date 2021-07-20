@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import {ApiService} from '../../services/api.service'
-
+import { HttpHeaders } from '@angular/common/http';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -29,9 +29,14 @@ export class RegisterComponent implements OnInit {
   }
 
   register(){
+    const HTTP_OPTIONS = {
+      headers: new HttpHeaders({
+        'Content-Type': 'aplication/json',
+      })
+    };
     let b = this.form.value
     console.log(b)
-    this._api.postTypeRequest('register', b).subscribe((res: any) => {
+    this._api.postTypeRequest('register', b ,HTTP_OPTIONS).subscribe((res: any) => {
       console.log(res)
       //if(res){
        ///// console.log(res)

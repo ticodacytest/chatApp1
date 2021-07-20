@@ -13,8 +13,8 @@ export class ApiService {
     return this.httpClient.get(this.REST_API_SERVER+url).pipe(map(res=>{ return res; }));
   }
 
-  postTypeRequest(url, payload){
-    return this.httpClient.post(this.REST_API_SERVER+url, payload).pipe(map(res=>{return res;}));
+  postTypeRequest(url, payload, HTTP_OPTIONS){
+    return this.httpClient.post(this.REST_API_SERVER+url, payload, HTTP_OPTIONS).pipe(map(res=>{return res;}));
   }
 
   putTypeReuest(url, payload){

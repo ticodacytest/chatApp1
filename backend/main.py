@@ -28,8 +28,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-SECRET_KEY = "f7b66e077c5997b084a83299662800d0bec8071f128aefede11ba687b6db9845"
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+JWT_SECRET = "f7b66e077c5997b084a83299662800d0bec8071f128aefede11ba687b6db9845"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -67,20 +67,6 @@ User_Pydantic = pydantic_model_creator(UserId, name="User")
 UserIn_Pydantic = pydantic_model_creator(UserId, name="UserIn", exclude_readonly=True)
 
 
-class Settings(BaseModel):
-    authjwt_secret_key: str = "my_jwt_secret"
-
-
-@AuthJWT.load_config
-def get_config():
-    return Settings()
-
-
-@app.exception_handler(AuthJWTException)
-def authjwt_exception_handler(request: Request, exc: AuthJWTException):
-    return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
-
-
 @app.get("/", tags=["root"])
 def read_root() -> dict:
     return {"Hello": "World Gaurav"}
@@ -95,7 +81,19 @@ async def authenticate_user(username: str, password: str):
     return user
 
 
-@app.post("/register")
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        user = await UserId.get(id=payload.get("id"))
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username and password",
+        )
+    return await User_Pydantic.from_tortoise_orm(user)
+
+
+@app.post("/register", response_model=User_Pydantic)
 async def register(user: UserIn_Pydantic):
     user_obj = UserId(
         firstname=user.firstname,
@@ -111,35 +109,32 @@ async def register(user: UserIn_Pydantic):
 
 
 @app.post("/login")
-async def login(user: UserIn_Pydantic0, Authorize: AuthJWT = Depends()):
+async def login(user: OAuth2PasswordRequestForm = Depends()):
     user = await authenticate_user(user.username, user.password)
-    # print(user.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",
         )
+    user_obj = await User_Pydantic.from_tortoise_orm(user)
     # user.username
     # user.password
-    # this is the part where we will check the user credentials with our database record
+    # this is the part where we will checUser_Pydantic k the user credentials with our database record
     # but since we are not going to use any db, straight away we will just create the token and send it back
     # subject identifier for who this token is for example id or username from database
-    access_token = Authorize.create_access_token(subject=user.username)
-    return {"access_token": access_token}
+    access_token = jwt.encode(user_obj.dict(), JWT_SECRET)
+    return {"access_token": access_token, "token_type": "brearer"}
 
 
-@app.get("/test-jwt")
-def user(Authorize: AuthJWT = Depends()):
-
-    Authorize.jwt_required()
-    return {"user": 123124124, "data": "jwt test works"}
-    # current_user = Authorize.get_jwt_subject()
-    # return {"user": current_user, 'data': 'jwt test works'}
+@app.get("/chat", response_model=User_Pydantic)
+async def chat_user(user: User_Pydantic = Depends(get_current_user)):
+    print("chat user")
+    return user
 
 
 register_tortoise(
     app,
-    db_url="sqlite://db.splite3",
+    db_url="sqlite://db.sqlite3",
     modules={"modles": ["main"]},
     generate_schemas=True,
     add_exception_handlers=True,
