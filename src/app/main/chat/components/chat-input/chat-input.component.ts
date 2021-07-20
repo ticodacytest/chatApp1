@@ -1,4 +1,5 @@
 import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-chat-input',
@@ -6,16 +7,13 @@ import { Component, OnInit, Output } from '@angular/core';
   styleUrls: ['./chat-input.component.css']
 })
 export class ChatInputComponent implements OnInit {
-  @Output()public newMessageText: string = '';
+  public newMessageText: string = '';
+  @Output() sendText = new EventEmitter();
   constructor() { }
 
   ngOnInit(): void {
   }
   public submit(message: string): void {
-    // todo to save text to backend
-
-    console.log('New Message:', message);
-
-    this.newMessageText = '';
+    this.sendText.emit(this.newMessageText);
   }
 }

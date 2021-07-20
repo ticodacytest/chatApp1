@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import {ApiService} from '../../services/api.service'
+import {ApiService} from '../../services/api.service';
 
 @Component({
   selector: 'app-chat',
@@ -20,10 +20,10 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {
     this._api.getTypeRequest('chat').subscribe((res: any) => {
-      console.log(res)
-    }, err => {
-      alert("Not authorised")
-      console.log(err)
+      console.log(res);
+    }, (err) => {
+      alert("Not authorised");
+      console.log(err);
     });
   }
 

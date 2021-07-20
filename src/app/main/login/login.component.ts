@@ -44,10 +44,10 @@ export class LoginComponent implements OnInit {
       console.log(res)
       if(res.access_token){
         this._auth.setDataInLocalStorage('token', res.access_token)
-        this.router.navigate(['/chat'])
+        this.router.navigate(['/chat']);
       }
     }, err => {
-      alert("username or password is incorrect")
+      alert("username or password is incorrect");
       console.log(err)
     });
   }
