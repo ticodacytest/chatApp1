@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import {ApiService} from '../../services/api.service'
 import { HttpParams } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from "@angular/common/http";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
